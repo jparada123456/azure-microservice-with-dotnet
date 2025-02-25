@@ -10,11 +10,11 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copia y restaura dependencias
-COPY src/Wpm.Management.Api/Wpm.Management.Api.csproj src/Wpm.Management.Api/
-RUN dotnet restore src/Wpm.Management.Api/Wpm.Management.Api.csproj
+COPY Wpm.Management.Api/Wpm.Management.Api.csproj Wpm.Management.Api/
+RUN dotnet restore Wpm.Management.Api/Wpm.Management.Api.csproj
 
 # Copia el código fuente y compila
-COPY src ./src
+COPY . .
 WORKDIR /src/Wpm.Management.Api
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
