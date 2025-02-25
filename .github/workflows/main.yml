@@ -10,14 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout del código
+        uses: actions/checkout@v3
 
-      - name: Log in
+      - name: Iniciar sesión en Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: Log in to ACR
+      - name: Iniciar sesión en Azure Container Registry (ACR)
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.ACR_LOGIN_SERVER }}
@@ -28,8 +29,9 @@ jobs:
         run: |
           echo "Listando archivos en el directorio raíz del workspace:"
           ls -R $GITHUB_WORKSPACE
-      
-      - name: Build and push container image
+
+      - name: Construir y enviar imagen Docker
         run: |
-          docker build -f src/Wpm.Management.Api/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }} src/Wpm.Management.Api
+          docker build -f src/Wpm.Management.Api/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }} src/
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }}
