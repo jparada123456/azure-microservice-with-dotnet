@@ -3,7 +3,7 @@ name: Wpm
 on:
   push:
     branches:
-     - 03_02e
+      - 03_02e
 
 jobs:
   build:
@@ -17,14 +17,17 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: 'Log in to ACR'
+      - name: Log in to ACR
         uses: azure/docker-login@v1
         with:
-          login-server: ${{secrets.ACR_LOGIN_SERVER}}
-          username: ${{secrets.ACR_USERNAME }}
-          password: ${{secrets.ACR_PASSWORD }}
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: 'Build and push container image'
+      - name: Verificar archivos en el runner
+        run: ls -R $GITHUB_WORKSPACE
+
+      - name: Build and push container image
         run: |
-          docker build src -f src/Wpm.Management.Api/Dockerfile -t ${{secrets.ACR_LOGIN_SERVER}}/wpm-managment-api:${{github.sha}}
-          docker push ${{secrets.ACR_LOGIN_SERVER}}/wpm-management-api:${{github.sha}}
+          docker build -f $GITHUB_WORKSPACE/src/Wpm.Management.Api/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }} $GITHUB_WORKSPACE/src/Wpm.Management.Api
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }}
