@@ -25,6 +25,9 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
+      - name: Get current date in yyyymmdd format
+        run: echo "DATE_TIME=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      
       - name: Verificar archivos en el runner
         run: |
           echo "Listando archivos en el directorio raíz del workspace:"
@@ -32,9 +35,8 @@ jobs:
 
       - name: Construir y enviar imagen Docker
         run: |
-          docker build -f src/Wpm.Management.Api/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }} src/
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }}
+          docker build -f src/Wpm.Management.Api/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ env.DATE_TIME }}.${{ github.run_number }} -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }} src/
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ env.DATE_TIME }}.${{ github.run_number }}
 
       - name: Desplegar a container Apps
         uses: azure/container-apps-deploy-action@v2
@@ -44,4 +46,4 @@ jobs:
           acrPassword: ${{ secrets.ACR_PASSWORD }}
           containerAppName: wpm-management
           resourceGroup: WPM
-          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest
+          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ env.DATE_TIME }}.${{ github.run_number }}
