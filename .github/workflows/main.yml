@@ -17,17 +17,16 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
       - name: Iniciar sesión en Azure Container Registry (ACR)
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-		  
-	  - name: Get current date in yyyymmdd format
-        run: echo "DATE_TIME=$(date +'%Y%m%d')" >> $GITHUB_ENV
 
+      - name: Get current date in yyyymmdd format
+        run: echo "DATE_TIME=$(date +'%Y%m%d')" >> $GITHUB_ENV
 
       - name: Verificar archivos en el runner
         run: |
@@ -36,8 +35,8 @@ jobs:
 
       - name: Construir y enviar imagen Docker
         run: |
-          docker build -f src/Wpm.Management.Api/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest-${{ env.DATE_TIME }}.${{ github.run_number }} -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }} src/
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest-${{ env.DATE_TIME }}.${{ github.run_number }}
+          docker build -f src/Wpm.Management.Api/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest${{ env.DATE_TIME }}.${{ github.run_number }} -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }} src/
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest${{ env.DATE_TIME }}.${{ github.run_number }}
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }}
 
       - name: Desplegar a container Apps
@@ -48,4 +47,4 @@ jobs:
           acrPassword: ${{ secrets.ACR_PASSWORD }}
           containerAppName: wpm-management
           resourceGroup: WPM
-          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest-${{ env.DATE_TIME }}.${{ github.run_number }}
+          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:latest${{ env.DATE_TIME }}.${{ github.run_number }}
