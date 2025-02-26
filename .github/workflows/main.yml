@@ -37,7 +37,6 @@ jobs:
         run: |
           docker build -f src/Wpm.Management.Api/Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ env.DATE_TIME }}.${{ github.run_number }} -t ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }} src/
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ env.DATE_TIME }}.${{ github.run_number }}
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/wpm-management-api:${{ github.sha }}
 
       - name: Desplegar a container Apps
         uses: azure/container-apps-deploy-action@v2
