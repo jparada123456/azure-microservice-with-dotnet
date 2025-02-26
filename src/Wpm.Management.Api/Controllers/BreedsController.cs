@@ -6,7 +6,7 @@ using Wpm.Management.Api.DataAccess;
 namespace Wpm.Management.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class BreedsController(ManagementDbContext dbContext, ILogger<BreedsController> logger) : ControllerBase
     {
         [HttpGet]
